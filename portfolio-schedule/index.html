@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🥰 잼페이스 취뽀 드가자ㅋㅋ</title>
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --text: #1c1c1e;
+      --card: #ffffff;
+      --primary: #007aff;
+      --secondary: #6e6e73;
+    }
+    body.dark-mode {
+      --bg: #1c1c1e;
+      --text: #f9f9f9;
+      --card: #2c2c2e;
+      --primary: #5ea0ff;
+      --secondary: #a1a1a6;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Pretendard', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 40px;
+      margin: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 40px;
+    }
+    .schedule-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+    }
+    .day-block {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .day-block h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+    .task {
+      margin-bottom: 24px;
+      padding-left: 12px;
+      border-left: 3px solid #d1d1d6;
+    }
+    .task-time {
+      font-size: 14px;
+      color: var(--secondary);
+      margin-bottom: 4px;
+    }
+    .task-title {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .task-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    input.checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+    .floating-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--primary);
+      color: white;
+      padding: 12px 20px;
+      font-weight: 600;
+      border-radius: 100px;
+      border: 0px
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: background-color 0.2s;
+      z-index: 1000;
+    }
+    .floating-btn:hover {
+      background-color: #005bbb;
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background-color: var(--card);
+      border: 0px solid var(--secondary);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      z-index: 1000;
+    }
+  </style>
+  <script>
+    function updateCountdowns() {
+      const now = new Date();
+      document.querySelectorAll('[data-end-time]').forEach(el => {
+        const endTime = new Date(el.dataset.endTime);
+        const diff = endTime - now;
+        if (diff > 0) {
+          const h = Math.floor(diff / 1000 / 60 / 60);
+          const m = Math.floor((diff / 1000 / 60) % 60);
+          el.textContent = `⏳ ${h}시간 ${m}분 남음`;
+        } else {
+          el.textContent = `✅ 완료됨`;
+        }
+      });
+    }
+    setInterval(updateCountdowns, 60000);
+    window.onload = updateCountdowns;
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    function showMotivation() {
+  const messages = [
+  "끝까지 달려보자!",
+  "이 정도는 너한테 식은 죽 먹기",
+  "오늘 너의 집중력은 예술이다!",
+  "넌 지금도 충분히 잘하고 있어!",
+  "제출하는 순간까지 함께 간다!",
+  "야 이건 진짜 해야지;;",
+  "이걸 안 하면 인생에 뭘 하겠냐",
+  "뇌풀가동 각이다 지금",
+  "뽀작뽀작할 시간임 ㅇㅇ",
+  "일단 시작해 무조건 이김",
+  "뭐하냐 지금 안 하면 나중에 운다",
+  "집중 좀 하자! 딴짓 ㄴㄴ",
+  "지금 안 하면 또 밤샘임;;"
+];
+  const message = messages[Math.floor(Math.random() * messages.length)];
+  alert(message);
+  const msg = new SpeechSynthesisUtterance(message);
+  msg.lang = 'ko-KR';
+  window.speechSynthesis.speak(msg);
+}
+  
+
+    // 알림 권한 요청
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
+    // 각 task에 대해 알림 설정 (예: 10분 전)
+    function scheduleNotifications() {
+      const now = new Date();
+      document.querySelectorAll('[data-end-time]').forEach(el => {
+        const endTime = new Date(el.dataset.endTime);
+        const taskName = el.closest('.task').querySelector('.task-title').textContent.trim();
+        const tenMinutesBefore = new Date(endTime.getTime() - 10 * 60 * 1000);
+        const delay = tenMinutesBefore - now;
+        if (delay > 0 && delay < 24 * 60 * 60 * 1000) {
+          setTimeout(() => {
+            if (Notification.permission === "granted") {
+              new Notification("⏰ 곧 시작! - " + taskName);
+            }
+          }, delay);
+        }
+      });
+    }
+
+    window.onload = function() {
+      updateCountdowns();
+      scheduleNotifications();
+    }
+  
+    // 효과음 추가
+    const clickSound = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
+
+    function showMotivation() {
+      const messages = [
+        "끝까지 달려보자!",
+        "이 정도는 너한테 식은 죽 먹기",
+        "오늘 너의 집중력은 예술이다!",
+        "넌 지금도 충분히 잘하고 있어!",
+        "제출하는 순간까지 함께 간다!",
+        "야 이건 진짜 해야지;;",
+        "이걸 안 하면 인생에 뭘 하겠냐",
+        "뇌풀가동 각이다 지금",
+        "뽀작뽀작할 시간임 ㅇㅇ",
+        "일단 시작해 무조건 이김",
+        "뭐하냐 지금 안 하면 나중에 운다",
+        "집중 좀 하자! 딴짓 ㄴㄴ",
+        "지금 안 하면 또 밤샘임;;"
+      ];
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      clickSound.play();
+      alert(message);
+      const msg = new SpeechSynthesisUtterance(message);
+      msg.lang = 'ko-KR';
+      window.speechSynthesis.speak(msg);
+    }
+  </script>
+</head>
+<body class="dark-mode">
+  <button class="theme-toggle" onclick="toggleTheme()">테마 전환</button>
+  <button class="floating-btn" onclick="showMotivation()">⚡</button>
+  <h1>잼페이스 취뽀 드가자ㅋㅋ</h1>
+  <div class="schedule-wrapper">
+<div class="day-block">
+      <h2>🗓️ 6월 22일 (토) – 포폴 집중 DAY</h2>
+      <div class="task">
+        <div class="task-time">11:30 – 12:30 <span data-end-time="2025-06-22T12:30:00+09:00">⏳ 31시간 50분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 페어리 문제정의 + UX 흐름</div>
+        <div class="task-desc">기존 앱 문제점 정리 / 사용자 니즈 3개 / 구조 도식 초안 정리</div>
+      </div>
+      <div class="task">
+        <div class="task-time">12:30 – 14:00 <span data-end-time="2025-06-22T14:00:00+09:00">⏳ 33시간 20분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 점심 + 산책 or 리셋</div>
+        <div class="task-desc">식사 준비 포함 90분 여유 / 햇빛 보며 정리</div>
+      </div>
+      <div class="task">
+        <div class="task-time">14:00 – 15:00 <span data-end-time="2025-06-22T15:00:00+09:00">⏳ 34시간 20분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 페어리 주요 화면 설명 ①</div>
+        <div class="task-desc">홈/챌린지 UI 흐름 정리 / 전환 포인트 강조</div>
+      </div>
+      <div class="task">
+        <div class="task-time">15:00 – 16:00 <span data-end-time="2025-06-22T16:00:00+09:00">⏳ 35시간 20분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 페어리 주요 화면 설명 ②</div>
+        <div class="task-desc">금융용어 사전 / 소비 리포트 시각화 포인트</div>
+      </div>
+      <div class="task">
+        <div class="task-time">16:00 – 17:00 <span data-end-time="2025-06-22T17:00:00+09:00">⏳ 36시간 20분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 타운 UX 요약</div>
+        <div class="task-desc">개선 전후 비교 흐름 / 정보구조 재정비 이유 정리</div>
+      </div>
+      <div class="task">
+        <div class="task-time">17:00 – 18:30 <span data-end-time="2025-06-22T18:30:00+09:00">⏳ 37시간 50분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> SNOW 인턴 정리</div>
+        <div class="task-desc">타깃 대상, 필터 특징 정리 / 콘텐츠 감각적 요소 추가</div>
+      </div>
+      <div class="task">
+        <div class="task-time">18:30 – 20:00 <span data-end-time="2025-06-22T20:00:00+09:00">⏳ 39시간 20분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 저녁 준비 + 식사</div>
+        <div class="task-desc">요리 + 정리까지 포함한 넉넉한 시간</div>
+      </div>
+      <div class="task">
+        <div class="task-time">20:00 – 20:30 <span data-end-time="2025-06-22T20:30:00+09:00">⏳ 39시간 50분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 마무리 점검</div>
+        <div class="task-desc">오늘 정리 / 텍스트 초안 넘길 것 정돈</div>
+      </div>
+    </div>
+    <div class="day-block">
+      <h2>🗓️ 6월 23일 (일) – 자소서 + 이력서 + 포폴 마감 DAY</h2>
+      <div class="task">
+        <div class="task-time">11:00 – 12:30 <span data-end-time="2025-06-23T12:30:00+09:00">⏳ 55시간 50분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 자소서 문단1</div>
+        <div class="task-desc">잼페이스 관심 동기 / 내 경험 연결 / 진정성 강조</div>
+      </div>
+      <div class="task">
+        <div class="task-time">12:30 – 14:00 <span data-end-time="2025-06-23T14:00:00+09:00">⏳ 57시간 20분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 점심</div>
+        <div class="task-desc">집중 후 텐션 회복 식사 / 리프레시</div>
+      </div>
+      <div class="task">
+        <div class="task-time">14:00 – 15:00 <span data-end-time="2025-06-23T15:00:00+09:00">⏳ 58시간 20분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 자소서 문단2</div>
+        <div class="task-desc">타운 실무 문제 해결 중심의 경험 / 협업 방식</div>
+      </div>
+      <div class="task">
+        <div class="task-time">15:00 – 16:00 <span data-end-time="2025-06-23T16:00:00+09:00">⏳ 59시간 20분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 자소서 문단3 + 마무리</div>
+        <div class="task-desc">잼페이스에서의 기대와 다짐 / 정서적 연결</div>
+      </div>
+      <div class="task">
+        <div class="task-time">16:00 – 17:00 <span data-end-time="2025-06-23T17:00:00+09:00">⏳ 60시간 20분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 이력서·경력기술서 정리</div>
+        <div class="task-desc">불필요한 문장 정돈 / 키워드 중심으로 간결화</div>
+      </div>
+      <div class="task">
+        <div class="task-time">17:00 – 18:30 <span data-end-time="2025-06-23T18:30:00+09:00">⏳ 61시간 50분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 포폴 커버·목차·정리</div>
+        <div class="task-desc">최종 텍스트 점검 / 전체 흐름 수정 / 제출 준비</div>
+      </div>
+      <div class="task">
+        <div class="task-time">18:30 – 20:00 <span data-end-time="2025-06-23T20:00:00+09:00">⏳ 63시간 20분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 저녁 + 정리</div>
+        <div class="task-desc">식사 + 여유시간 / 마감 직전 정비</div>
+      </div>
+      <div class="task">
+        <div class="task-time">20:00 – 20:30 <span data-end-time="2025-06-23T20:30:00+09:00">⏳ 63시간 50분 남음</span></div>
+        <div class="task-title"><input type="checkbox" class="checkbox"> 마감 or 예약 제출</div>
+        <div class="task-desc">PDF/링크 검토 후 제출 or 예약 설정</div>
+      </div>
+    </div>
+</div></body></html>
