@@ -126,7 +126,7 @@
     document.querySelectorAll('.task').forEach(taskEl => {
       // data-end-time을 가진 span 요소를 찾음 (종료 시간 정보)
       const timeSpan = taskEl.querySelector('.task-time span[data-end-time]');
-      const rawEndTime = timeSpan.dataset.endTime; // 예: "2025-06-22T12:30:00+09:00" -> 이젠 2025-06-21 또는 2025-06-22 로 바뀔 것임
+      const rawEndTime = timeSpan.dataset.endTime; // 예: "2025-06-21T12:30:00+09:00"
       const endTime = new Date(rawEndTime); // 종료 시간 Date 객체 생성
 
       // rawEndTime에서 날짜 부분 (YYYY-MM-DD)을 추출
@@ -156,13 +156,20 @@
         // 태스크가 아직 시작되지 않았으면 남은 시간 표시
         const h = Math.floor(diffToStart / (1000 * 60 * 60)); // 시간 계산
         const m = Math.floor((diffToStart / (1000 * 60)) % 60); // 분 계산
-        timeSpan.textContent = `⏳ ${h}시간 ${m}분 남음`;
+        const s = Math.floor((diffToStart / 1000) % 60); // 초 계산
+
+        // 초가 0인 경우에만 초를 표시하지 않거나, 항상 표시하도록 조정할 수 있음
+        if (h > 0 || m > 0 || s > 0) {
+            timeSpan.textContent = `⏳ ${h}시간 ${m}분 ${s}초 남음`;
+        } else {
+            timeSpan.textContent = `⏳ 곧 시작!`; // 초 단위까지 끝나면 '곧 시작' 등으로 표시
+        }
       }
     });
   }
 
-  // 1분(60000ms)마다 updateCountdowns 함수를 실행하여 시간 업데이트
-  setInterval(updateCountdowns, 60000);
+  // 1초(1000ms)마다 updateCountdowns 함수를 실행하여 시간 업데이트 (초 단위까지 실시간 반영)
+  setInterval(updateCountdowns, 1000);
 
   // 테마를 토글하는 함수
   function toggleTheme() {
