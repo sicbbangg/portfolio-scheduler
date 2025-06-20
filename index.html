@@ -113,24 +113,18 @@
   function updateCountdowns() {
     const now = new Date();
     document.querySelectorAll('[data-end-time]').forEach(el => {
-      const endTime = new Date(el.dataset.endTime);
+      const endTimeISO = el.dataset.endTime;
+      // UTC ISO 포맷 문자열을 한국 시간으로 강제 변환
+      const endTime = new Date(endTimeISO);
+      const diff = endTime.getTime() - now.getTime();
 
-      // 강제로 로컬 시간 기준으로 다시 파싱 (YYYY-MM-DDTHH:mm 형식만 허용)
-      if (el.dataset.endTime.includes('+09:00')) {
-        const localStr = el.dataset.endTime.split('+')[0];
-        const [datePart, timePart] = localStr.split('T');
-        const [year, month, day] = datePart.split('-');
-        const [hour, minute] = timePart.split(':');
-        const endTimeLocal = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute));
-        const diff = endTimeLocal.getTime() - now.getTime();
+      const h = Math.floor(diff / (1000 * 60 * 60));
+      const m = Math.floor((diff / (1000 * 60)) % 60);
 
-        if (diff > 0) {
-          const h = Math.floor(diff / (1000 * 60 * 60));
-          const m = Math.floor((diff / (1000 * 60)) % 60);
-          el.textContent = `\u23f3 ${h}\uC2DC\uAC04 ${m}\uBD84 \uB0A8\uC74C`;
-        } else {
-          el.textContent = `\u2705 \uC644\uB8CC\uB428`;
-        }
+      if (diff > 0) {
+        el.textContent = `\u23f3 ${h}\uC2DC\uAC04 ${m}\uBD84 \uB0A8\uC74C`;
+      } else {
+        el.textContent = `\u2705 \uC644\uB8CC\uB428`;
       }
     });
   }
