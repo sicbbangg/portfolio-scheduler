@@ -126,7 +126,7 @@
     document.querySelectorAll('.task').forEach(taskEl => {
       // data-end-time을 가진 span 요소를 찾음 (종료 시간 정보)
       const timeSpan = taskEl.querySelector('.task-time span[data-end-time]');
-      const rawEndTime = timeSpan.dataset.endTime; // 예: "2025-06-22T12:30:00+09:00"
+      const rawEndTime = timeSpan.dataset.endTime; // 예: "2025-06-22T12:30:00+09:00" -> 이젠 2025-06-21 또는 2025-06-22 로 바뀔 것임
       const endTime = new Date(rawEndTime); // 종료 시간 Date 객체 생성
 
       // rawEndTime에서 날짜 부분 (YYYY-MM-DD)을 추출
@@ -247,42 +247,42 @@
     <div class="day-block">
       <h2>🗓️ 6월 21일 (토) – 포폴 집중 DAY</h2>
       <div class="task">
-        <div class="task-time">11:30 – 12:30 <span data-end-time="2025-06-22T12:30:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">11:30 – 12:30 <span data-end-time="2025-06-21T12:30:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 페어리 문제정의 + UX 흐름</div>
         <div class="task-desc">기존 앱 문제점 정리 / 사용자 니즈 3개 / 구조 도식 초안 정리</div>
       </div>
       <div class="task">
-        <div class="task-time">12:30 – 14:00 <span data-end-time="2025-06-22T14:00:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">12:30 – 14:00 <span data-end-time="2025-06-21T14:00:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 점심 + 산책 or 리셋</div>
         <div class="task-desc">식사 준비 포함 90분 여유 / 햇빛 보며 정리</div>
       </div>
       <div class="task">
-        <div class="task-time">14:00 – 15:00 <span data-end-time="2025-06-22T15:00:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">14:00 – 15:00 <span data-end-time="2025-06-21T15:00:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 페어리 주요 화면 설명 ①</div>
         <div class="task-desc">홈/챌린지 UI 흐름 정리 / 전환 포인트 강조</div>
       </div>
       <div class="task">
-        <div class="task-time">15:00 – 16:00 <span data-end-time="2025-06-22T16:00:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">15:00 – 16:00 <span data-end-time="2025-06-21T16:00:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 페어리 주요 화면 설명 ②</div>
         <div class="task-desc">금융용어 사전 / 소비 리포트 시각화 포인트</div>
       </div>
       <div class="task">
-        <div class="task-time">16:00 – 17:00 <span data-end-time="2025-06-22T17:00:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">16:00 – 17:00 <span data-end-time="2025-06-21T17:00:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 타운 UX 요약</div>
         <div class="task-desc">개선 전후 비교 흐름 / 정보구조 재정비 이유 정리</div>
       </div>
       <div class="task">
-        <div class="task-time">17:00 – 18:30 <span data-end-time="2025-06-22T18:30:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">17:00 – 18:30 <span data-end-time="2025-06-21T18:30:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> SNOW 인턴 정리</div>
         <div class="task-desc">타깃 대상, 필터 특징 정리 / 콘텐츠 감각적 요소 추가</div>
       </div>
       <div class="task">
-        <div class="task-time">18:30 – 20:00 <span data-end-time="2025-06-22T20:00:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">18:30 – 20:00 <span data-end-time="2025-06-21T20:00:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 저녁 준비 + 식사</div>
         <div class="task-desc">요리 + 정리까지 포함한 넉넉한 시간</div>
       </div>
       <div class="task">
-        <div class="task-time">20:00 – 20:30 <span data-end-time="2025-06-22T20:30:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">20:00 – 20:30 <span data-end-time="2025-06-21T20:30:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 마무리 점검</div>
         <div class="task-desc">오늘 정리 / 텍스트 초안 넘길 것 정돈</div>
       </div>
@@ -290,42 +290,42 @@
     <div class="day-block">
       <h2>🗓️ 6월 22일 (일) – 자소서 + 이력서 + 포폴 마감 DAY</h2>
       <div class="task">
-        <div class="task-time">11:00 – 12:30 <span data-end-time="2025-06-23T12:30:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">11:00 – 12:30 <span data-end-time="2025-06-22T12:30:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 자소서 문단1</div>
         <div class="task-desc">잼페이스 관심 동기 / 내 경험 연결 / 진정성 강조</div>
       </div>
       <div class="task">
-        <div class="task-time">12:30 – 14:00 <span data-end-time="2025-06-23T14:00:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">12:30 – 14:00 <span data-end-time="2025-06-22T14:00:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 점심</div>
         <div class="task-desc">집중 후 텐션 회복 식사 / 리프레시</div>
       </div>
       <div class="task">
-        <div class="task-time">14:00 – 15:00 <span data-end-time="2025-06-23T15:00:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">14:00 – 15:00 <span data-end-time="2025-06-22T15:00:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 자소서 문단2</div>
         <div class="task-desc">타운 실무 문제 해결 중심의 경험 / 협업 방식</div>
       </div>
       <div class="task">
-        <div class="task-time">15:00 – 16:00 <span data-end-time="2025-06-23T16:00:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">15:00 – 16:00 <span data-end-time="2025-06-22T16:00:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 자소서 문단3 + 마무리</div>
         <div class="task-desc">잼페이스에서의 기대와 다짐 / 정서적 연결</div>
       </div>
       <div class="task">
-        <div class="task-time">16:00 – 17:00 <span data-end-time="2025-06-23T17:00:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">16:00 – 17:00 <span data-end-time="2025-06-22T17:00:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 이력서·경력기술서 정리</div>
         <div class="task-desc">불필요한 문장 정돈 / 키워드 중심으로 간결화</div>
       </div>
       <div class="task">
-        <div class="task-time">17:00 – 18:30 <span data-end-time="2025-06-23T18:30:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">17:00 – 18:30 <span data-end-time="2025-06-22T18:30:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 포폴 커버·목차·정리</div>
         <div class="task-desc">최종 텍스트 점검 / 전체 흐름 수정 / 제출 준비</div>
       </div>
       <div class="task">
-        <div class="task-time">18:30 – 20:00 <span data-end-time="2025-06-23T20:00:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">18:30 – 20:00 <span data-end-time="2025-06-22T20:00:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 저녁 + 정리</div>
         <div class="task-desc">식사 + 여유시간 / 마감 직전 정비</div>
       </div>
       <div class="task">
-        <div class="task-time">20:00 – 20:30 <span data-end-time="2025-06-23T20:30:00+09:00">시간 계산 중...</span></div>
+        <div class="task-time">20:00 – 20:30 <span data-end-time="2025-06-22T20:30:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 마감 or 예약 제출</div>
         <div class="task-desc">PDF/링크 검토 후 제출 or 예약 설정</div>
       </div>
