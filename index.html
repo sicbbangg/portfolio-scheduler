@@ -111,21 +111,24 @@
   </style>
   <script>
     function updateCountdowns() {
-      const now = new Date();
-      document.querySelectorAll('[data-end-time]').forEach(el => {
-        const endTime = new Date(el.dataset.endTime);
-        const diff = endTime - now;
-        if (diff > 0) {
-          const h = Math.floor(diff / 1000 / 60 / 60);
-          const m = Math.floor((diff / 1000 / 60) % 60);
-          el.textContent = `⏳ ${h}시간 ${m}분 남음`;
-        } else {
-          el.textContent = `✅ 완료됨`;
-        }
-      });
-    }
-    setInterval(updateCountdowns, 60000);
-    window.onload = updateCountdowns;
+    const now = new Date().getTime(); // UTC 기준으로 현재 시각을 밀리초로 가져옴
+    document.querySelectorAll('[data-end-time]').forEach(el => {
+      const endTimeStr = el.dataset.endTime;
+      const endTime = new Date(endTimeStr).getTime();
+      const diff = endTime - now;
+
+      if (diff > 0) {
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff / (1000 * 60)) % 60);
+        el.textContent = `⏳ ${h}시간 ${m}분 남음`;
+      } else {
+        el.textContent = `✅ 완료됨`;
+      }
+    });
+  }
+  setInterval(updateCountdowns, 60000);
+  window.onload = updateCountdowns;
+
 
     function toggleTheme() {
       document.body.classList.toggle('dark-mode');
