@@ -112,25 +112,36 @@
 <script>
   function updateCountdowns() {
     const now = new Date();
+
     document.querySelectorAll('[data-end-time]').forEach(el => {
-      const endTimeISO = el.dataset.endTime;
-      // UTC ISO 포맷 문자열을 한국 시간으로 강제 변환
-      const endTime = new Date(endTimeISO);
+      const raw = el.dataset.endTime.replace('+09:00', '');
+      const [datePart, timePart] = raw.split('T');
+      const [year, month, day] = datePart.split('-').map(Number);
+      const [hour, minute] = timePart.split(':').map(Number);
+
+      const endTime = new Date();
+      endTime.setFullYear(year);
+      endTime.setMonth(month - 1); // JS는 0부터 시작
+      endTime.setDate(day);
+      endTime.setHours(hour);
+      endTime.setMinutes(minute);
+      endTime.setSeconds(0);
+      endTime.setMilliseconds(0);
+
       const diff = endTime.getTime() - now.getTime();
 
-      const h = Math.floor(diff / (1000 * 60 * 60));
-      const m = Math.floor((diff / (1000 * 60)) % 60);
-
       if (diff > 0) {
-        el.textContent = `\u23f3 ${h}\uC2DC\uAC04 ${m}\uBD84 \uB0A8\uC74C`;
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff / (1000 * 60)) % 60);
+        el.textContent = `⏳ ${h}시간 ${m}분 남음`;
       } else {
-        el.textContent = `\u2705 \uC644\uB8CC\uB428`;
+        el.textContent = `✅ 완료됨`;
       }
     });
   }
+
   setInterval(updateCountdowns, 60000);
   window.onload = updateCountdowns;
-
     function toggleTheme() {
       document.body.classList.toggle('dark-mode');
     }
