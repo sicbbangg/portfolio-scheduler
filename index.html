@@ -115,27 +115,53 @@
   function updateCountdowns() {
     const now = new Date(); // 현재 시간 가져오기
 
-    // 모든 [data-end-time] 속성을 가진 요소들을 순회
-    document.querySelectorAll('[data-end-time]').forEach(el => {
-      // data-end-time 속성의 값을 직접 Date 객체로 파싱하여 올바른 시간을 얻음
-      const endTime = new Date(el.dataset.endTime);
+    // 현재 시간을 페이지에 표시하여 사용자가 확인할 수 있도록 함
+    const currentTimeDisplay = document.getElementById('current-time-display');
+    if (currentTimeDisplay) {
+      // 한국어 형식으로 전체 날짜와 시간을 표시 (예: "2025년 6월 21일 토요일 오전 5시 27분 00초")
+      currentTimeDisplay.textContent = `현재 시간: ${now.toLocaleString('ko-KR', { dateStyle: 'full', timeStyle: 'medium', hour12: false })}`;
+    }
 
-      // 남은 시간(밀리초) 계산
-      const diff = endTime.getTime() - now.getTime();
+    // 모든 .task 요소들을 순회
+    document.querySelectorAll('.task').forEach(taskEl => {
+      // data-end-time을 가진 span 요소를 찾음 (종료 시간 정보)
+      const timeSpan = taskEl.querySelector('.task-time span[data-end-time]');
+      const rawEndTime = timeSpan.dataset.endTime; // 예: "2025-06-22T12:30:00+09:00"
+      const endTime = new Date(rawEndTime); // 종료 시간 Date 객체 생성
 
-      // 남은 시간이 0보다 크면 남은 시간 표시
-      if (diff > 0) {
-        const h = Math.floor(diff / (1000 * 60 * 60)); // 시간 계산
-        const m = Math.floor((diff / (1000 * 60)) % 60); // 분 계산
-        el.textContent = `⏳ ${h}시간 ${m}분 남음`;
+      // rawEndTime에서 날짜 부분 (YYYY-MM-DD)을 추출
+      const datePart = rawEndTime.split('T')[0];
+
+      // task-time div의 텍스트에서 시작 시간 문자열 (예: "11:30")을 추출
+      const taskTimeText = taskEl.querySelector('.task-time').firstChild.textContent.trim();
+      const startTimeString = taskTimeText.split('–')[0].trim(); // "11:30" 부분을 파싱
+
+      // 추출한 날짜 부분과 시작 시간 문자열을 결합하여 태스크 시작 시간 Date 객체 생성
+      const fullStartTimeString = `${datePart}T${startTimeString}:00+09:00`; // 초는 00으로 가정
+      const startTime = new Date(fullStartTimeString);
+
+      // 현재 시간부터 태스크 시작 시간까지의 차이 (밀리초)
+      const diffToStart = startTime.getTime() - now.getTime();
+      // 현재 시간부터 태스크 종료 시간까지의 차이 (밀리초)
+      const diffToEnd = endTime.getTime() - now.getTime();
+
+      // 시간 상태에 따라 표시 업데이트
+      if (diffToEnd <= 0) {
+        // 태스크가 이미 종료되었으면 '완료됨'
+        timeSpan.textContent = `✅ 완료됨`;
+      } else if (diffToStart <= 0) {
+        // 태스크가 이미 시작되었지만 아직 끝나지 않았으면 '진행 중'
+        timeSpan.textContent = `▶️ 진행 중`;
       } else {
-        // 남은 시간이 없으면 '완료됨' 표시
-        el.textContent = `✅ 완료됨`;
+        // 태스크가 아직 시작되지 않았으면 남은 시간 표시
+        const h = Math.floor(diffToStart / (1000 * 60 * 60)); // 시간 계산
+        const m = Math.floor((diffToStart / (1000 * 60)) % 60); // 분 계산
+        timeSpan.textContent = `⏳ ${h}시간 ${m}분 남음`;
       }
     });
   }
 
-  // 1분(60000ms)마다 updateCountdowns 함수를 실행
+  // 1분(60000ms)마다 updateCountdowns 함수를 실행하여 시간 업데이트
   setInterval(updateCountdowns, 60000);
 
   // 테마를 토글하는 함수
@@ -143,7 +169,7 @@
     document.body.classList.toggle('dark-mode');
   }
 
-  // 동기 부여 메시지를 표시하고 재생하는 함수
+  // 동기 부여 메시지를 표시하고 음성으로 재생하는 함수
   function showMotivation() {
     const messages = [
       "끝까지 달려보자!",
@@ -162,11 +188,11 @@
     ];
     const message = messages[Math.floor(Math.random() * messages.length)];
 
-    // 클릭 효과음 재생 (alert이 아닌 커스텀 메시지 박스 사용 권장)
+    // 클릭 효과음 재생
     const clickSound = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
     clickSound.play();
 
-    // alert 대신 메시지 박스를 사용해야 함 (현재 alert이므로 수정 필요)
+    // alert 대신 커스텀 메시지 박스를 사용하는 것을 권장하지만, 현재는 alert 사용
     alert(message); 
 
     // 음성으로 메시지 재생
@@ -183,9 +209,12 @@
   // 각 task에 대해 알림 설정 (예: 10분 전)
   function scheduleNotifications() {
     const now = new Date();
-    document.querySelectorAll('[data-end-time]').forEach(el => {
-      const endTime = new Date(el.dataset.endTime); // 올바른 endTime 생성
-      const taskName = el.closest('.task').querySelector('.task-title').textContent.trim();
+    document.querySelectorAll('.task').forEach(taskEl => {
+      const timeSpan = taskEl.querySelector('.task-time span[data-end-time]');
+      const rawEndTime = timeSpan.dataset.endTime;
+      const endTime = new Date(rawEndTime);
+
+      const taskName = taskEl.querySelector('.task-title').textContent.trim();
       const tenMinutesBefore = new Date(endTime.getTime() - 10 * 60 * 1000); // 10분 전 시간 계산
       const delay = tenMinutesBefore - now; // 남은 지연 시간 계산
 
@@ -211,9 +240,12 @@
   <button class="theme-toggle" onclick="toggleTheme()">테마 전환</button>
   <button class="floating-btn" onclick="showMotivation()">⚡</button>
   <h1>잼페이스 취뽀 드가자ㅋㅋ</h1>
+  <!-- 현재 시간을 표시하는 영역 추가 -->
+  <div id="current-time-display" style="font-size: 14px; color: var(--secondary); margin-bottom: 20px;"></div>
+  
   <div class="schedule-wrapper">
     <div class="day-block">
-      <h2>🗓️ 6월 22일 (토) – 포폴 집중 DAY</h2>
+      <h2>🗓️ 6월 21일 (토) – 포폴 집중 DAY</h2>
       <div class="task">
         <div class="task-time">11:30 – 12:30 <span data-end-time="2025-06-22T12:30:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 페어리 문제정의 + UX 흐름</div>
@@ -256,7 +288,7 @@
       </div>
     </div>
     <div class="day-block">
-      <h2>🗓️ 6월 23일 (일) – 자소서 + 이력서 + 포폴 마감 DAY</h2>
+      <h2>🗓️ 6월 22일 (일) – 자소서 + 이력서 + 포폴 마감 DAY</h2>
       <div class="task">
         <div class="task-time">11:00 – 12:30 <span data-end-time="2025-06-23T12:30:00+09:00">시간 계산 중...</span></div>
         <div class="task-title"><input type="checkbox" class="checkbox"> 자소서 문단1</div>
