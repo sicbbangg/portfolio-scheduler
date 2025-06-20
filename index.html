@@ -113,23 +113,29 @@
   function updateCountdowns() {
     const now = new Date();
     document.querySelectorAll('[data-end-time]').forEach(el => {
-      // 🛠 +09:00 제거된 문자열을 그대로 로컬 시간으로 파싱
-      const rawTime = el.dataset.endTime.replace(/\+09:00/, '');
-      const endTime = new Date(rawTime);
-      const diff = endTime.getTime() - now.getTime();
+      const endTime = new Date(el.dataset.endTime);
 
-      if (diff > 0) {
-        const h = Math.floor(diff / (1000 * 60 * 60));
-        const m = Math.floor((diff / (1000 * 60)) % 60);
-        el.textContent = `⏳ ${h}시간 ${m}분 남음`;
-      } else {
-        el.textContent = `✅ 완료됨`;
+      // 강제로 로컬 시간 기준으로 다시 파싱 (YYYY-MM-DDTHH:mm 형식만 허용)
+      if (el.dataset.endTime.includes('+09:00')) {
+        const localStr = el.dataset.endTime.split('+')[0];
+        const [datePart, timePart] = localStr.split('T');
+        const [year, month, day] = datePart.split('-');
+        const [hour, minute] = timePart.split(':');
+        const endTimeLocal = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute));
+        const diff = endTimeLocal.getTime() - now.getTime();
+
+        if (diff > 0) {
+          const h = Math.floor(diff / (1000 * 60 * 60));
+          const m = Math.floor((diff / (1000 * 60)) % 60);
+          el.textContent = `\u23f3 ${h}\uC2DC\uAC04 ${m}\uBD84 \uB0A8\uC74C`;
+        } else {
+          el.textContent = `\u2705 \uC644\uB8CC\uB428`;
+        }
       }
     });
   }
   setInterval(updateCountdowns, 60000);
   window.onload = updateCountdowns;
-
 
     function toggleTheme() {
       document.body.classList.toggle('dark-mode');
