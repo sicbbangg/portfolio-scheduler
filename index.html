@@ -109,22 +109,21 @@
       z-index: 1000;
     }
   </style>
- <script>
+<script>
   function updateCountdowns() {
-    const now = new Date(); // 현재 시간을 Date 객체로 받음
-    const offset = now.getTimezoneOffset() * 60000; // 브라우저의 시간대 오차 (분 -> 밀리초)
-    const localNow = new Date(now.getTime() - offset); // UTC 기준으로 맞춘 지역 시각
-
+    const now = new Date();
     document.querySelectorAll('[data-end-time]').forEach(el => {
-      const endTime = new Date(el.dataset.endTime);
-      const diff = endTime.getTime() - localNow.getTime();
+      // 🛠 +09:00 제거된 문자열을 그대로 로컬 시간으로 파싱
+      const rawTime = el.dataset.endTime.replace(/\+09:00/, '');
+      const endTime = new Date(rawTime);
+      const diff = endTime.getTime() - now.getTime();
 
       if (diff > 0) {
         const h = Math.floor(diff / (1000 * 60 * 60));
         const m = Math.floor((diff / (1000 * 60)) % 60);
-        el.textContent = `\u23f3 ${h}\uC2DC\uAC04 ${m}\uBD84 \uB0A8\uC74C`;
+        el.textContent = `⏳ ${h}시간 ${m}분 남음`;
       } else {
-        el.textContent = `\u2705 \uC644\uB8CC\uB428`;
+        el.textContent = `✅ 완료됨`;
       }
     });
   }
